@@ -27,6 +27,7 @@ export {
   WORKSHOP_EMBED_QUERY_VALUE,
 } from "./protocol.js";
 export type {
+  WorkshopObjectSetValue,
   WorkshopSingleVariableValue,
   WorkshopVariableMap,
   WorkshopVariableValue,

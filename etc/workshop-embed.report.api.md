@@ -44,7 +44,12 @@ export interface WorkshopModuleConnection<TVariables extends WorkshopVariableMap
 }
 
 // @public
-export type WorkshopSingleVariableValue = string | number | boolean;
+export interface WorkshopObjectSetValue {
+    	readonly objectSetRid: string;
+}
+
+// @public
+export type WorkshopSingleVariableValue = string | number | boolean | WorkshopObjectSetValue;
 
 // @public
 export type WorkshopVariableMap = {

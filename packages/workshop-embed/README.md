@@ -42,7 +42,7 @@ connection.setVariables({
 });
 ```
 
-Values may be strings, finite numbers, booleans, homogeneous arrays of those values, or `null` to request clearing a variable. Arrays replace the whole list: `[]` sets an empty list, while `null` clears the variable. Mixed types, nested arrays, sparse arrays, and null or undefined array elements are rejected. Each message is a partial update; omitted variables remain unchanged. Object-set values are not supported yet.
+Values may be strings, finite numbers, booleans, homogeneous arrays of those primitives, object-set references, or `null` to request clearing a variable. Arrays replace the whole list: `[]` sets an empty list, while `null` clears the variable. Mixed types, nested arrays, sparse arrays, and null or undefined array elements are rejected. Each message is a partial update; omitted variables remain unchanged. Object-set arrays are not supported.
 
 `WorkshopSingleVariableValue` represents one non-null value; `WorkshopVariableValue` also accepts homogeneous arrays and `null`. Declare a specific element type, such as `readonly string[]`, to constrain each variable to its expected type.
 
@@ -53,6 +53,22 @@ Array inputs and outputs require a Workshop integration that supports list varia
 This API provides the messaging layer. Applying inputs requires a Workshop integration that checks module readiness, external IDs, variable types, and whether each variable can be set. Handshake-only deployments ignore variable messages. A successful `setVariables` call does not acknowledge that Workshop received or applied the update.
 
 Both ends use `setVariables(values)` to send and `onVariablesSet((values) => ...)` to receive validated updates for the current session. Every update uses the same `setVariables` message type; the receiver decides how to apply it.
+
+## Object-set variables
+
+Use `WorkshopObjectSetValue` to declare an object-set variable. Send and receive the same `{ objectSetRid: string }` reference shape used by custom widgets:
+
+```ts
+connection.setVariables({
+  employees: {
+    objectSetRid: "ri.object-set.main.temporary-object-set.example",
+  },
+});
+```
+
+Use `null` to clear the variable. The transport validates the object-set RID format; it does not fetch the set, check access, or convert OSDK `ObjectSet` instances. The receiving application must have access to the referenced set. Object-set arrays are not supported.
+
+Object-set inputs and outputs require object-set support in the Workshop embed integration. Older peers reject messages containing object-set references.
 
 ## Receiving Workshop variable changes
 
