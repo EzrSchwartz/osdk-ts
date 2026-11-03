@@ -32,9 +32,9 @@ export interface WorkshopModuleConnection<
   readonly sessionId: string;
   /** Dedicated transport. Add listeners with addEventListener; use disconnect to close it. */
   readonly port: MessagePort;
-  /** Sends scalar variable updates to the peer. Throws for invalid updates or a closed connection. Does not acknowledge application. */
+  /** Sends variable updates to the peer. Throws for invalid updates or a closed connection. Does not acknowledge application. */
   setVariables: (values: WorkshopVariableValues<TVariables>) => void;
-  /** Receives scalar variable updates from the peer for this session. Returns an unsubscribe function; disconnect removes all listeners. Throws if closed. */
+  /** Receives variable updates from the peer for this session. Returns an unsubscribe function; disconnect removes all listeners. Throws if closed. */
   onVariablesSet: (
     listener: (values: WorkshopVariableValues<TVariables>) => void,
   ) => () => void;
@@ -98,7 +98,7 @@ export function createConnection<
       isSetVariablesMessage(event.data) &&
       event.data.sessionId === sessionId
     ) {
-      // The caller declares the variable types; runtime validation checks IDs and supported scalar values.
+      // The caller declares the variable types; runtime validation checks IDs and supported variable values.
       const values = event.data.values as WorkshopVariableValues<TVariables>;
       // Defer listeners added by a callback until the next message.
       const listeners = [...variableListeners];

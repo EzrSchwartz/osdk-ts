@@ -44,12 +44,15 @@ export interface WorkshopModuleConnection<TVariables extends WorkshopVariableMap
 }
 
 // @public
+export type WorkshopSingleVariableValue = string | number | boolean;
+
+// @public
 export type WorkshopVariableMap = {
     	[externalId: string]: WorkshopVariableValue
 };
 
 // @public
-export type WorkshopVariableValue = string | number | boolean | null;
+export type WorkshopVariableValue = WorkshopSingleVariableValue | readonly string[] | readonly number[] | readonly boolean[] | null;
 
 // @public
 export type WorkshopVariableValues<TVariables extends WorkshopVariableMap = WorkshopVariableMap> = { readonly [Name in keyof TVariables]? : TVariables[Name] | null };

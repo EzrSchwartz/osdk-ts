@@ -28,7 +28,7 @@ The promise resolves after Workshop acknowledges a dedicated `MessagePort`. This
 
 The connection exposes its `sessionId`, `port`, and `disconnect()` method. Add port listeners with `addEventListener`. Call `connection.disconnect()` or abort the signal to notify Workshop and close the connection, rather than closing the port directly. Dispose the connection when the embedding application unmounts or navigates to another module.
 
-## Sending scalar variable inputs
+## Sending variable inputs
 
 The connection can send inputs keyed by a module variable's external ID:
 
@@ -37,13 +37,18 @@ connection.setVariables({
   searchText: "Ada",
   maxResults: 25,
   includeArchived: false,
+  selectedNames: ["Ada", "Grace"],
   selectedName: null,
 });
 ```
 
-Values may be strings, finite numbers, booleans, or `null` to request clearing a variable. Each message is a partial update; omitted variables remain unchanged. Arrays and object-set values are not supported yet.
+Values may be strings, finite numbers, booleans, homogeneous arrays of those values, or `null` to request clearing a variable. Arrays replace the whole list: `[]` sets an empty list, while `null` clears the variable. Mixed types, nested arrays, sparse arrays, and null or undefined array elements are rejected. Each message is a partial update; omitted variables remain unchanged. Object-set values are not supported yet.
+
+`WorkshopSingleVariableValue` represents one non-null value; `WorkshopVariableValue` also accepts homogeneous arrays and `null`. Declare a specific element type, such as `readonly string[]`, to constrain each variable to its expected type.
 
 External IDs must be non-empty and unique ignoring case within each update. `_open_rebase_dialog` and `_kiosk_mode_session_id` are reserved, including capitalization variants. Original key capitalization is preserved. Invalid updates throw a `TypeError` before sending; malformed incoming updates are ignored.
+
+Array inputs and outputs require a Workshop integration that supports list variables. A scalar-only peer rejects messages containing arrays.
 
 This API provides the messaging layer. Applying inputs requires a Workshop integration that checks module readiness, external IDs, variable types, and whether each variable can be set. Handshake-only deployments ignore variable messages. A successful `setVariables` call does not acknowledge that Workshop received or applied the update.
 
@@ -62,7 +67,7 @@ connection.setVariables({ maxResults: 25 });
 
 The Workshop integration publishes current values with `connection.setVariables(values)` when the module becomes ready and when its interface values change. Input updates and change notifications are independent events, without per-update acknowledgments or conflict resolution for concurrent edits.
 
-Use `null` for cleared values. The transport validates envelopes, external ID constraints, and scalar values; the Workshop integration restricts notifications to the module interface. Input-only deployments continue accepting inputs but do not publish changes. Receiving outputs requires this publisher integration in Workshop.
+Use `null` for cleared values. The transport validates envelopes, external ID constraints, and variable values; the Workshop integration restricts notifications to the module interface. Input-only deployments continue accepting inputs but do not publish changes. Receiving outputs requires this publisher integration in Workshop.
 
 `onVariablesSet` returns an unsubscribe function, and disconnecting removes all listeners. All variable methods throw on a closed connection.
 
@@ -77,6 +82,7 @@ type ModuleVariables = {
   searchText: string;
   maxResults: number;
   includeArchived: boolean;
+  selectedNames: readonly string[];
 };
 
 const connection = await connectToWorkshopModule<ModuleVariables>({
@@ -92,8 +98,8 @@ connection.setVariables({ searchText: null }); // Request clearing a value.
 // connection.setVariables({ unknownVariable: true });
 ```
 
-The type determines the values sent by `setVariables` and received by `onVariablesSet` in either direction. Updates are partial, so a received field may be omitted (`undefined`) or cleared (`null`). Use `WorkshopVariableValues<ModuleVariables>` to refer to the update type. Without a type argument, the connection accepts any valid external ID with a supported scalar value.
+The type determines the values sent by `setVariables` and received by `onVariablesSet` in either direction. Updates are partial, so a received field may be omitted (`undefined`) or cleared (`null`). Use `WorkshopVariableValues<ModuleVariables>` to refer to the update type. Without a type argument, the connection accepts any valid external ID with a supported variable value.
 
-This declaration provides compile-time checking only. The transport validates the message envelope, external ID constraints, and supported scalar values, but does not check values against the declared variable names or types. Incoming values are typed using the caller's declaration.
+This declaration provides compile-time checking only. The transport validates the message envelope, external ID constraints, and supported variable values, but does not check values against the declared variable names or types. Incoming values are typed using the caller's declaration.
 
 The type can be authored manually or emitted by future code generation. It describes the app's expectations; it does not discover or verify the actual Workshop module's variables. The Workshop integration must still validate the module interface and apply inputs when the module is ready.
