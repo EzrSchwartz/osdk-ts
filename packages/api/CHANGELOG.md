@@ -1,5 +1,11 @@
 # @osdk/api
 
+## 2.87.0
+
+### Minor Changes
+
+- 093d27c: Add experimental support for sending events to agent sessions.
+
 ## 2.86.0
 
 ### Minor Changes

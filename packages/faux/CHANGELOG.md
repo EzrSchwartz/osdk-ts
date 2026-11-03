@@ -1,5 +1,17 @@
 # @osdk/shared.test
 
+## 0.64.0
+
+### Minor Changes
+
+- 093d27c: Add experimental support for sending events to agent sessions.
+
+### Patch Changes
+
+- Updated dependencies [093d27c]
+  - @osdk/api@2.87.0
+  - @osdk/generator-converters@2.87.0
+
 ## 0.63.0
 
 ### Patch Changes

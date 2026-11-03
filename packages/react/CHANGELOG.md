@@ -1,5 +1,19 @@
 # @osdkkit/react
 
+## 2.87.0
+
+### Minor Changes
+
+- 960ecf0: Restore workspace-derived OSDK peer requirements and stop release tooling from replacing them with older versions inferred from changelog history. Published peer ranges now require at least the workspace versions used to build these packages.
+
+### Patch Changes
+
+- Updated dependencies [093d27c]
+- Updated dependencies [9c93e57]
+  - @osdk/api@2.87.0
+  - @osdk/client@2.87.0
+  - @osdk/aip-core@0.13.0
+
 ## 2.86.0
 
 ### Patch Changes

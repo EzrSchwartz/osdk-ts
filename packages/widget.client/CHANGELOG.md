@@ -1,5 +1,11 @@
 # @osdk/widget.client
 
+## 3.87.0
+
+### Patch Changes
+
+- @osdk/widget.api@3.87.0
+
 ## 3.86.0
 
 ### Patch Changes

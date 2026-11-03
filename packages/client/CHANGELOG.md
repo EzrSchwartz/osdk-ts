@@ -1,5 +1,20 @@
 # @osdk/client
 
+## 2.87.0
+
+### Minor Changes
+
+- 093d27c: Add experimental support for sending events to agent sessions.
+- 9c93e57: Export getClientBranch from @osdk/client/internal. Inherit the OSDK client's global branch in WorkshopModule and support an explicit branchRid in BaseWorkshopModule, including navigation back to main.
+
+### Patch Changes
+
+- Updated dependencies [093d27c]
+  - @osdk/api@2.87.0
+  - @osdk/generator-converters@2.87.0
+  - @osdk/shared.test@2.59.0
+  - @osdk/client.unstable@2.87.0
+
 ## 2.86.0
 
 ### Minor Changes
